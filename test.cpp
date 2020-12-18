@@ -1,92 +1,174 @@
 #include <iostream>
-#include <iomanip>
-//#include <stack>
-
 using namespace std;
-struct node
-{
-    int data;
+
+//node
+template<typename T> 
+struct node{
+    T data;
     node *next;
-    node(int d){
-        data = d;
-    }
 };
+template<typename T> 
 class myStack
 {
-    private:
-        node *top;
-        int count = 0;
     public:
-        myStack();
-        ~myStack();
-        void push(int x);
-        void pop();
-        int peek();
-        int size() const;
-        bool isEmpty() const;
-
+    myStack();
+    ~myStack();
+    int pop();
+    T peek();
+    int size();
+    void push(T x);
+    bool isEmpty();
+    private:
+    int count;
+    node<T> *top; 
 };
-myStack::myStack(){};
-myStack::~myStack(){};
-int myStack::size() const
+ 
+//stack
+template<typename T>
+myStack<T>::myStack(){
+    top = nullptr;
+    count = 0;
+};
+template<typename T>
+myStack<T>::~myStack(){};
+template<typename T>
+int myStack<T>::size()
 {
-    return count;
+    return count; 
 }
-void myStack::push(int x)
+template<typename T>
+int myStack<T>::pop()
 {
-    //create a node
-    node *temp = new node(x);
-    //is stack empty?
+    //node *temp = new node();
     if(isEmpty())
     {
-        //point top to that node
-        top = temp; 
-        count++;
-    }
-    //else just push
-    else{
-        //top node's next node is the new node we created
-        temp->data = x;
-        temp->next = top; //temp points to top 
-        top = temp;      //we can now set top to our temp
-                        //meaning temp is officially our top 
-        count++;
-    }
-}
-void myStack::pop()
-{
-    if(isEmpty())
-    {
-        cout << "You cannot delete from an empty stack!";
+        cout << "\nCannot output from an empty stack!\n";
+        return -1;
     }
     else
     {
+        node<T> *tmp = top;
+        int a = top->data;
         top = top->next;
+        delete(tmp);
         count--;
+        return a;
+    }
+    
+}
+template<typename T>
+void myStack<T>::push(T x)
+{
+    node<T> *temp = new node<T>();
+    temp->data = x; 
+    if(isEmpty())
+    {
+        top = temp;
+        count++;
+    }
+    else
+    {
+      temp->next = top;
+      top = temp;
+      count++;
     }
 }
-int myStack::peek()
+template<typename T>
+T myStack<T>::peek()
 {
-    return top->data;
+    if(top == nullptr)
+    {
+        
+    }
+    else
+    {
+      return top->data;
+    } 
 }
-bool myStack::isEmpty() const
-{
+template<typename T>
+bool myStack<T>::isEmpty(){
     return top == nullptr;
 }
+ 
+//function signatures for compiler
+bool isBalanced(string myString);
+void reverseString(string str);
 
-int main(){
-myStack stack; 
-stack.push(9);
-cout << stack.peek();
-stack.push(8);
-cout << stack.peek();
-stack.push(4);
-cout << stack.peek();
-stack.push(5);
-cout << stack.peek();
-stack.pop();
-cout << stack.peek();
-cout << endl;
-cout << "The size is: " << stack.size() << endl;
+
+ 
+int main()
+{
+    
+    return 0;
 }
 
+
+
+ 
+ bool isBallanced(string myString){
+    //myString = "{(99 + 20) * [50]} = 20";
+    myStack<char> stack;
+
+    for(char ch: myString)
+    {
+        if(ch == '(' || ch == '{' || ch == '[')
+        {
+            stack.push(ch);
+            cout << stack.peek();
+        }
+        if(ch == ')')
+        {
+            if(stack.peek() == '(')
+            {
+                stack.pop();
+            }
+            else{
+                return false;
+            }
+        }
+        if(ch == ']')
+        {
+            if(stack.peek() == '[')
+            {
+                stack.pop();
+            }
+            else{
+                return false;
+            }
+        }
+        if(ch == '}')
+        {
+            if(stack.peek() == '{')
+            {
+                stack.pop();
+            }
+            else{
+                return false;
+            }
+        }
+    }
+    
+    if(!stack.isEmpty())
+    {
+        return false;
+    }
+    return true;
+ }
+ 
+ 
+void reverseString(string str){
+    myStack<char> stack;
+    //for each character in str
+    for(char c: str){
+        //put that character into the stack
+        stack.push(c);
+    }
+    
+    string reversedString = "";
+    //until the stack is empty
+    while (!stack.isEmpty()){
+        //take out the characters from the stack 1 by 1 and put htose into a new string
+        reversedString.push_back(stack.pop());
+    }
+    cout << str << " reversed is: " << reversedString << "?" << endl;
+}
